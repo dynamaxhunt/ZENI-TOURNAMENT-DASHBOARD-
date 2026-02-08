@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Tournaments</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --bg: #050505;
+            --card: #0f0f13;
+            --purple: #9d00ff;
+            --glow: 0 0 15px #9d00ff;
+            --text: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 0 30px rgba(157, 0, 255, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--purple);
+            text-shadow: var(--glow);
+            margin-bottom: 5px;
+        }
+
+        .sub-text { font-size: 12px; color: #888; margin-bottom: 25px; }
+
+        label { display: block; text-align: left; font-size: 12px; color: var(--purple); margin-top: 15px; font-weight: bold; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 8px;
+            margin-top: 5px;
+            box-sizing: border-box; /* Fixes width issues */
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--purple);
+            box-shadow: var(--glow);
+        }
+
+        .btn-arise {
+            background: linear-gradient(45deg, #5e0099, #9d00ff);
+            color: white;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            margin-top: 25px;
+            cursor: pointer;
+            text-shadow: 0 0 5px white;
+            box-shadow: var(--glow);
+        }
+
+        .btn-arise:hover { transform: scale(1.02); }
+        
+        .check-status { margin-top: 20px; display: block; color: #888; text-decoration: none; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>SHADOW SCRIMS</h1>
+    <p class="sub-text">"Arise and Claim Your Victory"</p>
+
+    <form action="/register" method="POST">
+        
+        <label>SELECT RANK (MATCH TYPE)</label>
+        <select name="match_type" required>
+            <option value="Solo (9rs)">👤 Solo (₹9) - Win ₹200</option>
+            <option value="Solo Pro (29rs)">👤⚡ Solo Pro (₹29)</option>
+            <option value="Duo (49rs)">👥 Duo (₹49)</option>
+            <option value="Duo Ultra (99rs)">👥🔥 Duo Ultra (₹99)</option>
+            <option value="Squad (149rs)">⚔️ Squad (₹149)</option>
+            <option value="Squad Legend (199rs)">⚔️🏆 Squad Legend (₹199)</option>
+        </select>
+
+        <label>PLAYER INFO</label>
+        <input type="text" name="nickname" placeholder="In-Game Name" required>
+        <input type="number" name="uid" placeholder="UID (e.g. 12345678)" required>
+
+        <label>PAYMENT PROOF</label>
+        <input type="text" name="sender_name" placeholder="Sender Name (e.g. Rahul Kumar)" required>
+        <input type="number" name="txn_id" placeholder="Transaction ID (Last 4 Digits)" required>
+
+        <button class="btn-arise">ARISE (JOIN)</button>
+    </form>
+
+    <a href="/profile" class="check-status">Already Joined? Check Room ID Here</a>
+</div>
+
+</body>
+</html>

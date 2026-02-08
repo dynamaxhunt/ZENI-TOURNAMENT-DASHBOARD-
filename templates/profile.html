@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hunter Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { max-width: 400px; margin: auto; background: #0f0f13; padding: 20px; border: 1px solid #333; border-radius: 10px; }
+        .status-box { padding: 15px; margin-top: 20px; border-radius: 5px; background: #1a1a1a; border: 1px dashed #555; }
+        .verified { border-color: #00ff00; color: #00ff00; }
+        .pending { border-color: #ff9900; color: #ff9900; }
+        input { padding: 10px; width: 70%; background: black; border: 1px solid #555; color: white; }
+        button { padding: 10px; background: #9d00ff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="color: #9d00ff;">HUNTER STATUS</h2>
+    
+    {% if not player %}
+        <p>Enter your UID to see your Ticket</p>
+        <form action="/profile" method="GET">
+            <input type="number" name="uid" placeholder="Enter UID" required>
+            <button>SEARCH</button>
+        </form>
+    {% else %}
+        <h3>{{ player.nickname }}</h3>
+        <p style="color:#888;">UID: {{ player.uid }}</p>
+        <p>Match: <b>{{ player.match }}</b></p>
+
+        <div class="status-box {% if player.status == 'Verified' %}verified{% else %}pending{% endif %}">
+            STATUS: <b>{{ player.status }}</b>
+            <hr style="border-color: #333;">
+            <p style="color: white; font-size: 18px; font-weight: bold;">
+                {{ player.room_details }}
+            </p>
+        </div>
+        <br>
+        <a href="/profile" style="color: #555;">Check Another ID</a>
+    {% endif %}
+</div>
+
+</body>
+</html>
