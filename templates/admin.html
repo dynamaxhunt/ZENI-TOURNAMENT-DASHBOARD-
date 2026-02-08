@@ -6,7 +6,7 @@
     <style>
         body { background: #111; color: #ddd; font-family: sans-serif; padding: 10px; }
         .player-card { background: #222; border-left: 5px solid #555; margin-bottom: 10px; padding: 10px; }
-        .verified { border-left-color: #00ff00; opacity: 0.6; } /* Fades out verified players */
+        .verified { border-left-color: #00ff00; opacity: 0.6; }
         input { padding: 5px; background: black; border: 1px solid #444; color: white; width: 60%; }
         button { background: #00ff00; color: black; border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; }
         .row { display: flex; justify-content: space-between; font-size: 14px; }
@@ -16,7 +16,7 @@
 
     <h2 style="color: #9d00ff;">ADMIN PANEL</h2>
 
-    {% for p in players reversed %}
+    {% for p in players %}
     <div class="player-card {% if p.status == 'Verified' %}verified{% endif %}">
         <div class="row">
             <b style="color: orange;">{{ p.match }}</b>
@@ -43,3 +43,4 @@
 
 </body>
 </html>
+
