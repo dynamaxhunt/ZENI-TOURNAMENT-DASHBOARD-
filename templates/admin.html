@@ -5,38 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body { background: #111; color: #ddd; font-family: sans-serif; padding: 10px; }
-        .player-card { background: #222; border-left: 5px solid #555; margin-bottom: 10px; padding: 10px; }
-        .verified { border-left-color: #00ff00; opacity: 0.6; }
-        input { padding: 5px; background: black; border: 1px solid #444; color: white; width: 60%; }
-        button { background: #00ff00; color: black; border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; }
-        .row { display: flex; justify-content: space-between; font-size: 14px; }
+        .player-card { background: #222; border-left: 5px solid #555; margin-bottom: 15px; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .verified { border-left-color: #00ff00; }
+        input { padding: 8px; background: black; border: 1px solid #444; color: white; width: 60%; border-radius: 4px; }
+        button { background: #00ff00; color: black; border: none; padding: 8px 15px; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
+        .team-list { background: #000; padding: 10px; border: 1px dashed #444; margin: 10px 0; font-size: 13px; line-height: 1.6; color: #ccc; }
+        .payment-info { background: #1a1a1a; padding: 8px; border-radius: 4px; font-size: 13px; color: #aaa; border: 1px solid #333; }
+        h2 { color: #9d00ff; border-bottom: 1px solid #333; padding-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <h2 style="color: #9d00ff;">ADMIN PANEL</h2>
+    <h2>👑 ADMIN DASHBOARD</h2>
 
-    {% for p in players %}
+    {% for p in reversed(players) %}
     <div class="player-card {% if p.status == 'Verified' %}verified{% endif %}">
+        
         <div class="row">
-            <b style="color: orange;">{{ p.match }}</b>
-            <span>{{ p.time }}</span>
+            <b style="color: orange; font-size: 16px;">{{ p.match }}</b>
+            <span style="color: #666;">{{ p.time }}</span>
         </div>
-        <div class="row">
-            <span>Name: <b>{{ p.nickname }}</b> ({{ p.uid }})</span>
+
+        <div class="team-list">
+            {{ p.team_html | safe }}
         </div>
-        <div class="row" style="background: #333; padding: 5px; margin: 5px 0;">
-            <span>Sender: <b>{{ p.sender_name }}</b></span>
-            <span>Txn: <b style="color: yellow;">{{ p.txn_id }}</b></span>
+
+        <div class="payment-info">
+            <div>💰 Sender: <b style="color: white;">{{ p.sender_name }}</b></div>
+            <div>🧾 Txn ID: <b style="color: yellow;">{{ p.txn_id }}</b></div>
         </div>
 
         {% if p.status == 'Pending' %}
-        <form action="/verify/{{ p.id }}" method="POST" style="margin-top: 5px;">
-            <input type="text" name="room_info" placeholder="Paste: ID 123 Pass 456" required>
-            <button>✅ VERIFY & SEND</button>
+        <form action="/verify/{{ p.id }}" method="POST" style="margin-top: 10px;">
+            <input type="text" name="room_info" placeholder="ID: 12345 Pass: 5555" required>
+            <button>SEND</button>
         </form>
         {% else %}
-            <small style="color: #00ff00;">✅ ID Sent: {{ p.room_details }}</small>
+            <div style="margin-top: 10px; color: #00ff00; font-size: 14px;">
+                ✅ SENT: {{ p.room_details }}
+            </div>
         {% endif %}
     </div>
     {% endfor %}
