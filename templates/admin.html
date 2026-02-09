@@ -19,7 +19,7 @@
 
     <h2>👑 ADMIN DASHBOARD</h2>
 
-    {% for p in reversed(players) %}
+    {% for p in players %}
     <div class="player-card {% if p.status == 'Verified' %}verified{% endif %}">
         
         <div class="row">
@@ -51,4 +51,3 @@
 
 </body>
 </html>
-
