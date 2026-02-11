@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shadow Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Panel</title>
     <style>
-        body { background: #111; color: #ddd; font-family: sans-serif; padding: 10px; }
-        .player-card { background: #222; border-left: 5px solid #555; margin-bottom: 15px; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .verified { border-left-color: #00ff00; }
-        input { padding: 8px; background: black; border: 1px solid #444; color: white; width: 60%; border-radius: 4px; }
-        button { background: #00ff00; color: black; border: none; padding: 8px 15px; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
-        .team-list { background: #000; padding: 10px; border: 1px dashed #444; margin: 10px 0; font-size: 13px; line-height: 1.6; color: #ccc; }
-        .payment-info { background: #1a1a1a; padding: 8px; border-radius: 4px; font-size: 13px; color: #aaa; border: 1px solid #333; }
-        h2 { color: #9d00ff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
+        .section { background: #222; padding: 15px; margin-bottom: 20px; border: 1px solid #444; }
+        input, select { background: #000; color: white; border: 1px solid #555; padding: 5px; }
+        button { background: #00e676; border: none; cursor: pointer; padding: 5px 10px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #444; padding: 8px; text-align: left; }
     </style>
 </head>
 <body>
+    <h1>👑 ZENI ADMIN DASHBOARD</h1>
 
-    <h2>👑 ADMIN DASHBOARD</h2>
-
-    {% for p in players %}
-    <div class="player-card {% if p.status == 'Verified' %}verified{% endif %}">
-        
-        <div class="row">
-            <b style="color: orange; font-size: 16px;">{{ p.match }}</b>
-            <span style="color: #666;">{{ p.time }}</span>
-        </div>
-
-        <div class="team-list">
-            {{ p.team_html | safe }}
-        </div>
-
-        <div class="payment-info">
-            <div>💰 Sender: <b style="color: white;">{{ p.sender_name }}</b></div>
-            <div>🧾 Txn ID: <b style="color: yellow;">{{ p.txn_id }}</b></div>
-        </div>
-
-        {% if p.status == 'Pending' %}
-        <form action="/verify/{{ p.id }}" method="POST" style="margin-top: 10px;">
-            <input type="text" name="room_info" placeholder="ID: 12345 Pass: 5555" required>
-            <button>SEND</button>
+    <div class="section">
+        <h3>🏆 UPDATE LEADERBOARD</h3>
+        <form action="/update_leaderboard" method="post">
+            <select name="lb_type">
+                <option value="SOLO">SOLO Leaderboard</option>
+                <option value="DUO">DUO Leaderboard</option>
+            </select>
+            <input type="text" name="name" placeholder="Winner Name / Team" required>
+            <input type="text" name="kills" placeholder="Kills" required>
+            <input type="text" name="prize" placeholder="Prize (e.g. ₹200)" required>
+            <button type="submit">ADD WINNER</button>
         </form>
-        {% else %}
-            <div style="margin-top: 10px; color: #00ff00; font-size: 14px;">
-                ✅ SENT: {{ p.room_details }}
-            </div>
-        {% endif %}
     </div>
-    {% endfor %}
 
+    <div class="section">
+        <h3>📋 PLAYER REQUESTS</h3>
+        <table>
+            <tr>
+                <th>Mode</th>
+                <th>Details</th>
+                <th>Txn ID</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            {% for reg in requests %}
+            <tr>
+                <td>{{ reg.mode }}</td>
+                <td>
+                    <b>{{ reg.p1_name }}</b> ({{ reg.p1_uid }})<br>
+                    <small>{{ reg.p2_name }}</small>
+                </td>
+                <td>{{ reg.txn_id }}</td>
+                <td style="color: {{ 'green' if reg.status == 'APPROVED' else 'orange' }}">{{ reg.status }}</td>
+                <td>
+                    {% if reg.status == 'PENDING' %}
+                    <form action="/approve/{{ reg.p1_uid }}" method="post">
+                        <input type="text" name="room_id" placeholder="Room ID" size="8">
+                        <input type="text" name="room_pass" placeholder="Pass" size="8">
+                        <button type="submit">✅</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>
