@@ -4,141 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZENI SHADOW SCRIMS</title>
-    
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
     <style>
-        body { background: #050505; color: white; font-family: 'Rajdhani', sans-serif; text-align: center; }
+        body { background: #050505; color: white; font-family: 'Rajdhani', sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
         h1, h2, h3 { font-family: 'Orbitron', sans-serif; }
         .container { max-width: 600px; margin: 0 auto; padding: 10px; }
-        
-        /* Leaderboard Styles */
+
+        /* LEADERBOARDS */
         .lb-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
         .lb-box { background: #110d1f; border: 1px solid #333; padding: 10px; width: 45%; min-width: 250px; border-radius: 10px; }
-        .lb-title { color: gold; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
+        .lb-title { border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { text-align: left; color: #888; font-size: 12px; }
         td { border-bottom: 1px solid #222; padding: 5px 0; }
-        .winner-name { color: #00e5ff; font-weight: bold; }
+
+        /* FORMS */
+        .card { background: #1a1a24; border: 1px solid #333; padding: 20px; margin: 20px 0; border-radius: 15px; text-align: left; }
+        .card h2 { text-align: center; margin-top: 0; }
+        label { display: block; color: #aaa; font-size: 12px; margin-top: 10px; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; margin-top: 15px; font-family: 'Orbitron'; font-size: 16px; }
         
-        .card { background: #1a1a24; border: 1px solid #9d00ff; padding: 15px; margin: 15px 0; border-radius: 10px; }
-        input { padding: 10px; margin: 5px 0; width: 90%; background: #000; color: white; border: 1px solid #444; }
-        button { width: 95%; padding: 12px; background: #9d00ff; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px; }
+        .solo-theme { border-color: #9d00ff; }
+        .solo-btn { background: #9d00ff; color: white; }
+        .duo-theme { border-color: #ff0055; }
+        .duo-btn { background: #ff0055; color: white; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1 style="color:#00e5ff; text-shadow: 0 0 10px #9d00ff;">ZENI SHADOW SCRIMS</h1>
+        <h1 style="color:#00e5ff; text-shadow: 0 0 15px #9d00ff; margin-top: 30px;">ZENI SHADOW SCRIMS</h1>
+        <p style="color:#888;">OFFICIAL TOURNAMENT HUB</p>
 
         <div class="lb-container">
-            <div class="lb-box" style="border-color: #00e5ff;">
-                <h3 class="lb-title">SOLO KINGS 👑</h3>
+            <div class="lb-box" style="border-top: 3px solid #9d00ff;">
+                <h3 class="lb-title" style="color:#9d00ff">SOLO KINGS 👑</h3>
                 <table>
                     <tr><th>PLAYER</th><th>KILLS</th><th>PRIZE</th></tr>
                     {% for p in solo_lb %}
-                    <tr>
-                        <td class="winner-name">{{ p.name }}</td>
-                        <td>{{ p.kills }} ⚔️</td>
-                        <td style="color:lightgreen">{{ p.prize }}</td>
-                    </tr>
+                    <tr><td style="color:#00e5ff; font-weight:bold;">{{ p.name }}</td><td>{{ p.kills }}</td><td style="color:#00e676">{{ p.prize }}</td></tr>
                     {% else %}
-                    <tr><td colspan="3" style="text-align:center; padding:10px;">No Results Yet</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding:10px; color:#555;">No Matches Yet</td></tr>
                     {% endfor %}
                 </table>
             </div>
 
-            <div class="lb-box" style="border-color: #ff0055;">
-                <h3 class="lb-title">DUO LEGENDS 💀</h3>
+            <div class="lb-box" style="border-top: 3px solid #ff0055;">
+                <h3 class="lb-title" style="color:#ff0055">DUO LEGENDS 💀</h3>
                 <table>
                     <tr><th>TEAM</th><th>KILLS</th><th>PRIZE</th></tr>
                     {% for p in duo_lb %}
-                    <tr>
-                        <td class="winner-name" style="color:#ff0055">{{ p.name }}</td>
-                        <td>{{ p.kills }} ⚔️</td>
-                        <td style="color:lightgreen">{{ p.prize }}</td>
-                    </tr>
+                    <tr><td style="color:#ff0055; font-weight:bold;">{{ p.name }}</td><td>{{ p.kills }}</td><td style="color:#00e676">{{ p.prize }}</td></tr>
                     {% else %}
-                    <tr><td colspan="3" style="text-align:center; padding:10px;">No Results Yet</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding:10px; color:#555;">No Matches Yet</td></tr>
                     {% endfor %}
                 </table>
             </div>
         </div>
 
-        <div class="card">
-            <h3>🔍 CHECK MY STATUS</h3>
+        <div class="card" style="border: 1px solid #00e5ff;">
+            <h3 style="text-align:center; color:#00e5ff;">🔍 CHECK MY STATUS</h3>
             <form action="/profile" method="get">
-                <input type="text" name="uid" placeholder="Enter UID" required>
-                <button type="submit" style="background:#333;">SEARCH</button>
+                <input type="text" name="uid" placeholder="Enter Your UID" required>
+                <button type="submit" style="background: #00e5ff; color: #000;">SEARCH</button>
             </form>
         </div>
 
-        <div class="card">
-            <h2 style="color:#00e5ff">SOLO REGISTRATION</h2>
+        <div class="card solo-theme">
+            <h2 style="color:#9d00ff">SOLO REGISTRATION</h2>
             <form action="/register" method="post">
                 <input type="hidden" name="mode" value="SOLO">
-                <input type="text" name="p1_name" placeholder="In-Game Name" required>
-                <input type="text" name="p1_uid" placeholder="Your UID" required>
-                <input type="text" name="txn_id" placeholder="Transaction ID (Payment)" required>
-                <button type="submit">PAY ₹19 & JOIN</button>
+                <label>IN-GAME NAME</label><input type="text" name="p1_name" placeholder="Ex: ZENI_01" required>
+                <label>YOUR UID</label><input type="number" name="p1_uid" placeholder="Ex: 12345678" required>
+                <label>PAYMENT DETAILS</label>
+                <input type="text" name="sender_name" placeholder="Sender Name (UPI)" required>
+                <input type="text" name="txn_id" placeholder="Transaction ID (UTR)" required>
+                <button type="submit" class="solo-btn">PAY ₹19 & JOIN</button>
             </form>
         </div>
 
-        <div class="card" style="border-color:#ff0055">
+        <div class="card duo-theme">
             <h2 style="color:#ff0055">DUO REGISTRATION</h2>
             <form action="/register" method="post">
                 <input type="hidden" name="mode" value="DUO">
-                <input type="text" name="p1_name" placeholder="Player 1 Name" required>
-                <input type="text" name="p1_uid" placeholder="Player 1 UID" required>
-                <br>
-                <input type="text" name="p2_name" placeholder="Player 2 Name" required>
-                <input type="text" name="txn_id" placeholder="Transaction ID (Payment)" required>
-                <button type="submit" style="background:#ff0055">PAY ₹39 & JOIN</button>
+                
+                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">PLAYER 1 DETAILS</label>
+                <input type="text" name="p1_name" placeholder="Name" required style="margin-bottom:5px;">
+                <input type="number" name="p1_uid" placeholder="UID" required>
+
+                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">PLAYER 2 DETAILS</label>
+                <input type="text" name="p2_name" placeholder="Name" required style="margin-bottom:5px;">
+                <input type="number" name="p2_uid" placeholder="UID" required>
+
+                <label style="color:#aaa; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">SUBSTITUTE (OPTIONAL)</label>
+                <input type="text" name="sub_name" placeholder="Sub Name" style="margin-bottom:5px;">
+                <input type="number" name="sub_uid" placeholder="Sub UID">
+
+                <label style="color:#00e676; margin-top:20px;">PAYMENT VERIFICATION</label>
+                <input type="text" name="sender_name" placeholder="Sender Name (UPI App)" required style="margin-bottom:5px;">
+                <input type="text" name="txn_id" placeholder="Transaction ID / UTR" required>
+
+                <button type="submit" class="duo-btn">PAY ₹39 & JOIN</button>
             </form>
         </div>
     </div>
 </body>
 </html>
-                <div class="stat-item"><span class="stat-label">ENTRY</span><span class="stat-val">₹19</span></div>
-                <div class="stat-item"><span class="stat-label">PER KILL</span><span class="stat-val">₹6 🔥</span></div>
-                <div class="stat-item" style="grid-column: span 2; background: #1a0b2e; border: 1px solid var(--primary);">
-                    <span class="stat-label">BOOYAH PRIZE</span><span class="stat-val" style="color: var(--accent);">₹250</span>
-                </div>
-            </div>
-            <button onclick="openRegister('SOLO')" class="join-btn">JOIN SOLO</button>
-        </div>
-
-        <div class="match-card active-card">
-            <div class="mode-header">
-                <span class="mode-name duo-text">DUO LEGENDS</span>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-item"><span class="stat-label">ENTRY (TEAM)</span><span class="stat-val">₹39</span></div>
-                <div class="stat-item"><span class="stat-label">PER KILL</span><span class="stat-val">₹7 🔥</span></div>
-                <div class="stat-item" style="grid-column: span 2; background: #1a0b2e; border: 1px solid #ff0055;">
-                    <span class="stat-label">BOOYAH PRIZE</span><span class="stat-val" style="color: #ff0055;">₹300</span>
-                </div>
-            </div>
-            <button onclick="openRegister('DUO')" class="join-btn">JOIN DUO</button>
-        </div>
-
-        <div class="match-card disabled-card">
-            <span class="coming-soon-badge">LOCKED 🔒</span>
-            <div class="mode-header">
-                <span class="mode-name" style="color:#666;">SQUAD WARS</span>
-            </div>
-            <div class="stats-grid">
-                <div class="stat-item"><span class="stat-label">STATUS</span><span class="stat-val">COMING SOON</span></div>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="regModal" class="modal">
-        <div class="modal-content">
-            <h3 style="color:white; margin-bottom:15px; text-align:center;">PLAYER REGISTRATION</h3>
-            <form id="joinForm">
-                <input type="hidden" id="matchType">
                 <div class="input-group">
                     <label>In-Game Name (IGN)</label>
                     <input type="text" id="ign" required placeholder="Ex: ZENI_01">
