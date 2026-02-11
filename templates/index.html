@@ -3,142 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZENI SHADOW SCRIMS | Official Tournament</title>
+    <title>ZENI SHADOW SCRIMS</title>
     
-    <link rel="icon" type="image/jpg" href="favicon.jpg">
-
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #9d00ff; /* Shadow Purple */
-            --accent: #00e5ff; /* Jin Woo Blue */
-            --bg: #050505;
-            --card-bg: #110d1f;
-            --text: #ffffff;
-            --gold: #ffd700;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', sans-serif; }
+        body { background: #050505; color: white; font-family: 'Rajdhani', sans-serif; text-align: center; }
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 10px; }
         
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 50px; }
+        /* Leaderboard Styles */
+        .lb-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+        .lb-box { background: #110d1f; border: 1px solid #333; padding: 10px; width: 45%; min-width: 250px; border-radius: 10px; }
+        .lb-title { color: gold; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; color: #888; font-size: 12px; }
+        td { border-bottom: 1px solid #222; padding: 5px 0; }
+        .winner-name { color: #00e5ff; font-weight: bold; }
         
-        /* HEADER & BANNER */
-        .header { text-align: center; padding: 20px; background: linear-gradient(180deg, #1a0b2e 0%, #050505 100%); border-bottom: 2px solid var(--primary); }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; color: var(--accent); text-shadow: 0 0 15px var(--primary); letter-spacing: 2px; }
-        
-        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
-
-        /* LEADERBOARD SECTION (Public) */
-        .leaderboard-box {
-            background: rgba(157, 0, 255, 0.1); border: 1px solid var(--primary);
-            border-radius: 10px; padding: 15px; margin-bottom: 25px;
-            display: none; /* Hidden by default, shows if data exists */
-        }
-        .lb-title { text-align: center; color: var(--gold); font-family: 'Orbitron'; margin-bottom: 10px; text-transform: uppercase; }
-        .lb-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .lb-table th { text-align: left; color: #aaa; padding: 5px; border-bottom: 1px solid #333; }
-        .lb-table td { padding: 8px 5px; border-bottom: 1px solid #222; }
-        .rank-1 { color: var(--gold); font-weight: bold; text-shadow: 0 0 5px var(--gold); }
-        
-        /* MATCH CARDS */
-        .section-title { font-family: 'Orbitron'; color: #fff; margin: 20px 0 10px; font-size: 18px; border-left: 4px solid var(--primary); padding-left: 10px; }
-        
-        .match-card {
-            background: var(--card-bg); border: 1px solid #333; border-radius: 12px;
-            padding: 15px; margin-bottom: 15px; position: relative; overflow: hidden;
-            transition: 0.3s;
-        }
-        
-        /* Active Card Style */
-        .active-card { border: 1px solid var(--primary); box-shadow: 0 0 10px rgba(157, 0, 255, 0.2); }
-        .active-card:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(157, 0, 255, 0.4); }
-        
-        /* Disabled Card Style */
-        .disabled-card { opacity: 0.6; filter: grayscale(1); border: 1px dashed #444; }
-        .coming-soon-badge {
-            position: absolute; top: 10px; right: 10px; background: #333; color: #888;
-            font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold;
-        }
-
-        .mode-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .mode-name { font-size: 22px; font-weight: 800; font-family: 'Orbitron'; color: white; }
-        .solo-text { color: var(--accent); }
-        .duo-text { color: #ff0055; }
-        
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
-        .stat-item { background: #000; padding: 8px; border-radius: 6px; text-align: center; }
-        .stat-label { color: #888; font-size: 10px; display: block; }
-        .stat-val { font-weight: bold; color: #fff; font-size: 16px; }
-
-        .join-btn {
-            display: block; width: 100%; background: var(--primary); color: white;
-            padding: 12px; text-align: center; border: none; border-radius: 8px;
-            font-family: 'Orbitron'; font-weight: bold; font-size: 16px; margin-top: 15px;
-            cursor: pointer; text-decoration: none;
-        }
-        .join-btn:hover { background: #b62eff; }
-
-        /* REGISTRATION FORM (Hidden Overlay) */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: #1a1a24; padding: 25px; width: 90%; max-width: 400px;
-            border-radius: 15px; border: 1px solid var(--primary);
-        }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; color: #aaa; margin-bottom: 5px; font-size: 14px; }
-        .input-group input { 
-            width: 100%; padding: 12px; background: #000; border: 1px solid #444; 
-            color: white; border-radius: 6px; outline: none;
-        }
-        .confirm-btn { background: var(--accent); color: #000; width: 100%; padding: 12px; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .close-btn { color: #ff4444; text-align: center; display: block; margin-top: 15px; cursor: pointer; }
-
-        /* ADMIN PANEL (Bottom) */
-        .admin-toggle { text-align: center; margin-top: 50px; color: #333; font-size: 12px; cursor: pointer; }
-        .admin-panel { display: none; background: #111; padding: 20px; border-top: 2px solid #333; margin-top: 20px; }
-        .admin-input { background: #222; color: #fff; border: 1px solid #444; padding: 5px; margin: 5px 0; width: 100%; }
-        .danger-btn { background: #ff0044; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; }
-        .success-btn { background: #00e676; color: #000; padding: 10px; width: 100%; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer; }
-
+        .card { background: #1a1a24; border: 1px solid #9d00ff; padding: 15px; margin: 15px 0; border-radius: 10px; }
+        input { padding: 10px; margin: 5px 0; width: 90%; background: #000; color: white; border: 1px solid #444; }
+        button { width: 95%; padding: 12px; background: #9d00ff; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-    <header class="header">
-        <div class="logo-text">ZENI SHADOW SCRIMS</div>
-        <p style="color: #aaa; font-size: 12px; letter-spacing: 3px;">SOLO LEVELING TOURNAMENT</p>
-    </header>
-
     <div class="container">
-        
-        <div id="leaderboardDisplay" class="leaderboard-box">
-            <h3 class="lb-title">🏆 WEEKLY HALL OF FAME</h3>
-            <table class="lb-table">
-                <thead>
+        <h1 style="color:#00e5ff; text-shadow: 0 0 10px #9d00ff;">ZENI SHADOW SCRIMS</h1>
+
+        <div class="lb-container">
+            <div class="lb-box" style="border-color: #00e5ff;">
+                <h3 class="lb-title">SOLO KINGS 👑</h3>
+                <table>
+                    <tr><th>PLAYER</th><th>KILLS</th><th>PRIZE</th></tr>
+                    {% for p in solo_lb %}
                     <tr>
-                        <th width="15%">#</th>
-                        <th>PLAYER</th>
-                        <th>KILLS</th>
-                        <th>WON</th>
+                        <td class="winner-name">{{ p.name }}</td>
+                        <td>{{ p.kills }} ⚔️</td>
+                        <td style="color:lightgreen">{{ p.prize }}</td>
                     </tr>
-                </thead>
-                <tbody id="lbBody">
-                    </tbody>
-            </table>
-            <small style="display:block; text-align:center; color:#555; margin-top:10px;">Resets Weekly</small>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center; padding:10px;">No Results Yet</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="lb-box" style="border-color: #ff0055;">
+                <h3 class="lb-title">DUO LEGENDS 💀</h3>
+                <table>
+                    <tr><th>TEAM</th><th>KILLS</th><th>PRIZE</th></tr>
+                    {% for p in duo_lb %}
+                    <tr>
+                        <td class="winner-name" style="color:#ff0055">{{ p.name }}</td>
+                        <td>{{ p.kills }} ⚔️</td>
+                        <td style="color:lightgreen">{{ p.prize }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" style="text-align:center; padding:10px;">No Results Yet</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
 
-        <h2 class="section-title">SELECT MODE</h2>
+        <div class="card">
+            <h3>🔍 CHECK MY STATUS</h3>
+            <form action="/profile" method="get">
+                <input type="text" name="uid" placeholder="Enter UID" required>
+                <button type="submit" style="background:#333;">SEARCH</button>
+            </form>
+        </div>
 
-        <div class="match-card active-card">
-            <div class="mode-header">
-                <span class="mode-name solo-text">SOLO AWAKENING</span>
-            </div>
-            <div class="stats-grid">
+        <div class="card">
+            <h2 style="color:#00e5ff">SOLO REGISTRATION</h2>
+            <form action="/register" method="post">
+                <input type="hidden" name="mode" value="SOLO">
+                <input type="text" name="p1_name" placeholder="In-Game Name" required>
+                <input type="text" name="p1_uid" placeholder="Your UID" required>
+                <input type="text" name="txn_id" placeholder="Transaction ID (Payment)" required>
+                <button type="submit">PAY ₹19 & JOIN</button>
+            </form>
+        </div>
+
+        <div class="card" style="border-color:#ff0055">
+            <h2 style="color:#ff0055">DUO REGISTRATION</h2>
+            <form action="/register" method="post">
+                <input type="hidden" name="mode" value="DUO">
+                <input type="text" name="p1_name" placeholder="Player 1 Name" required>
+                <input type="text" name="p1_uid" placeholder="Player 1 UID" required>
+                <br>
+                <input type="text" name="p2_name" placeholder="Player 2 Name" required>
+                <input type="text" name="txn_id" placeholder="Transaction ID (Payment)" required>
+                <button type="submit" style="background:#ff0055">PAY ₹39 & JOIN</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
                 <div class="stat-item"><span class="stat-label">ENTRY</span><span class="stat-val">₹19</span></div>
                 <div class="stat-item"><span class="stat-label">PER KILL</span><span class="stat-val">₹6 🔥</span></div>
                 <div class="stat-item" style="grid-column: span 2; background: #1a0b2e; border: 1px solid var(--primary);">
