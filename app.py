@@ -1,103 +1,85 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-import json
-import os
-from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
-app.secret_key = "shadow_monarch_key"
-DB_FILE = "players.json"
+app.secret_key = "zeni_secret_key"
 
-def load_data():
-    if not os.path.exists(DB_FILE): return []
-    try:
-        with open(DB_FILE, 'r') as f: return json.load(f)
-    except: return []
+# --- DATABASE (Resets on restart) ---
+registrations = []
+approved_players = {} 
 
-def save_data(data):
-    with open(DB_FILE, 'w') as f: json.dump(data, f)
+# SEPARATE LEADERBOARDS
+leaderboards = {
+    'SOLO': [],
+    'DUO': []
+}
 
 @app.route('/')
-def home():
-    return render_template('index.html')
+def index():
+    return render_template('index.html', solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
 
 @app.route('/register', methods=['POST'])
 def register():
-    players = load_data()
-    
-    match_type = request.form.get('match_type')
-    
-    # --- 1. BUILD THE FULL TEAM LIST FOR ADMIN ---
-    # This creates a vertical list using <br> tags
-    team_display = f"👑 <b>{request.form.get('nick1')}</b> (UID: {request.form.get('uid1')})"
-    
-    # Duo
-    if request.form.get('nick2'):
-        team_display += f"<br>2️⃣ {request.form.get('nick2')} ({request.form.get('uid2')})"
-    if request.form.get('duo_sub_nick'):
-        team_display += f"<br>🔄 Sub: {request.form.get('duo_sub_nick')} ({request.form.get('duo_sub_uid')})"
-
-    # Squad
-    if request.form.get('nick3'):
-        team_display += f"<br>3️⃣ {request.form.get('nick3')} ({request.form.get('uid3')})"
-        team_display += f"<br>4️⃣ {request.form.get('nick4')} ({request.form.get('uid4')})"
-    if request.form.get('squad_sub_nick'):
-        team_display += f"<br>🔄 Sub: {request.form.get('squad_sub_nick')} ({request.form.get('squad_sub_uid')})"
-
-    new_player = {
-        "id": len(players) + 1,
-        "time": datetime.now().strftime("%H:%M"),
-        "team_html": team_display,      # The big list for Admin
-        "leader_name": request.form.get('nick1'), # For the profile title
-        "uid": request.form.get('uid1'), # STRICT: Only Leader UID is saved here
-        "txn_id": request.form.get('txn_id'),
-        "sender_name": request.form.get('sender_name'),
-        "match": match_type,
-        "status": "Pending",
-        "room_details": "Waiting for Admin..."
+    # (Same registration logic as before)
+    mode = request.form.get('mode')
+    new_reg = {
+        'mode': mode,
+        'p1_name': request.form.get('p1_name'),
+        'p1_uid': request.form.get('p1_uid'),
+        'p2_name': request.form.get('p2_name', '-'),
+        'txn_id': request.form.get('txn_id'),
+        'status': 'PENDING'
     }
-    
-    players.append(new_player)
-    save_data(players)
-    
-    return redirect(url_for('profile', uid=request.form.get('uid1')))
+    registrations.append(new_reg)
+    return redirect(url_for('profile', uid=new_reg['p1_uid']))
 
 @app.route('/profile')
 def profile():
     uid = request.args.get('uid')
-    players = load_data()
-    my_info = None
+    status = "NOT FOUND"
+    room = None
     
-    if uid:
-        for p in players:
-            # STRICT CHECK: Only if the UID matches the LEADER'S UID
-            if p.get('uid') == uid:
-                my_info = p
+    if uid in approved_players:
+        status = "APPROVED"
+        room = approved_players[uid]
+    else:
+        for reg in registrations:
+            if reg['p1_uid'] == uid:
+                status = "PENDING"
                 break
-    
-    return render_template('profile.html', player=my_info)
+    return render_template('profile.html', uid=uid, status=status, room=room)
 
+# --- ADMIN ROUTES ---
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
-        if request.form.get('password') == "jinwoo":
-            session['admin'] = True
-    if not session.get('admin'):
-        return render_template('login.html')
-    return render_template('admin.html', players=load_data())
+        if request.form.get('password') == "zeni123":
+            return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
+        else:
+            return "WRONG PASSWORD"
+    return render_template('admin_login.html')
 
-@app.route('/verify/<int:player_id>', methods=['POST'])
-def verify(player_id):
-    if not session.get('admin'): return "Access Denied"
-    players = load_data()
-    for p in players:
-        if p['id'] == player_id:
-            p['status'] = "Verified"
-            p['room_details'] = request.form.get('room_info')
-            break
-    save_data(players)
-    return redirect('/admin')
+@app.route('/update_leaderboard', methods=['POST'])
+def update_leaderboard():
+    lb_type = request.form.get('lb_type') # SOLO or DUO
+    name = request.form.get('name')
+    kills = request.form.get('kills')
+    prize = request.form.get('prize')
+    
+    # Add to specific list
+    leaderboards[lb_type].append({'name': name, 'kills': kills, 'prize': prize})
+    
+    # Return to admin (bypass login for speed)
+    return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
+
+@app.route('/approve/<uid>', methods=['POST'])
+def approve(uid):
+    room_id = request.form.get('room_id')
+    room_pass = request.form.get('room_pass')
+    approved_players[uid] = {'id': room_id, 'pass': room_pass}
+    for reg in registrations:
+        if reg['p1_uid'] == uid:
+            reg['status'] = 'APPROVED'
+    return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
-
-    app.run(host='0.0.0.0', port=8080)
+    app.run(debug=True)
