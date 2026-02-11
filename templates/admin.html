@@ -33,27 +33,33 @@
         <table>
             <tr>
                 <th>Mode</th>
-                <th>Details</th>
-                <th>Txn ID</th>
-                <th>Status</th>
+                <th>Team Details</th>
+                <th>Payment Info</th>
                 <th>Action</th>
             </tr>
             {% for reg in requests %}
             <tr>
                 <td>{{ reg.mode }}</td>
                 <td>
-                    <b>{{ reg.p1_name }}</b> ({{ reg.p1_uid }})<br>
-                    <small>{{ reg.p2_name }}</small>
+                    <b>P1:</b> {{ reg.p1_name }} ({{ reg.p1_uid }})<br>
+                    {% if reg.mode == 'DUO' %}
+                        <b>P2:</b> {{ reg.p2_name }} ({{ reg.p2_uid }})<br>
+                        <small style="color:#aaa;">Sub: {{ reg.sub_name }} ({{ reg.sub_uid }})</small>
+                    {% endif %}
                 </td>
-                <td>{{ reg.txn_id }}</td>
-                <td style="color: {{ 'green' if reg.status == 'APPROVED' else 'orange' }}">{{ reg.status }}</td>
+                <td>
+                    Txn: {{ reg.txn_id }}<br>
+                    Sender: {{ reg.sender }}
+                </td>
                 <td>
                     {% if reg.status == 'PENDING' %}
                     <form action="/approve/{{ reg.p1_uid }}" method="post">
                         <input type="text" name="room_id" placeholder="Room ID" size="8">
                         <input type="text" name="room_pass" placeholder="Pass" size="8">
-                        <button type="submit">✅</button>
+                        <button type="submit">✅ Approve</button>
                     </form>
+                    {% else %}
+                    <span style="color:green; font-weight:bold;">Sent ✅</span>
                     {% endif %}
                 </td>
             </tr>
