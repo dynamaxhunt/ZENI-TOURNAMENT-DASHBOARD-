@@ -8,8 +8,6 @@ registrations = []
 approved_players = {} 
 leaderboards = {'SOLO': [], 'DUO': []}
 
-# --- ROUTES ---
-
 @app.route('/')
 def index():
     return render_template('index.html', solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
@@ -17,16 +15,22 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     mode = request.form.get('mode')
+    
+    # SAVE DETAILS (Including Substitute)
     new_reg = {
         'mode': mode,
         'p1_name': request.form.get('p1_name'),
         'p1_uid': request.form.get('p1_uid'),
         'p2_name': request.form.get('p2_name', '-'),
+        'p2_uid': request.form.get('p2_uid', '-'),
+        'sub_name': request.form.get('sub_name', '-'), # NEW SUB FIELD
+        'sub_uid': request.form.get('sub_uid', '-'),   # NEW SUB FIELD
+        'sender': request.form.get('sender_name'),
         'txn_id': request.form.get('txn_id'),
         'status': 'PENDING'
     }
+    
     registrations.append(new_reg)
-    # Send user to their profile immediately after registering
     return redirect(url_for('profile', uid=new_reg['p1_uid']))
 
 @app.route('/profile')
@@ -40,23 +44,19 @@ def profile():
         room = approved_players[uid]
     else:
         for reg in registrations:
-            if reg['p1_uid'] == uid:
+            # Check if they are Player 1 OR Player 2
+            if reg['p1_uid'] == uid or reg['p2_uid'] == uid:
                 status = "PENDING"
                 break
     return render_template('profile.html', uid=uid, status=status, room=room)
 
-# --- ADMIN SYSTEM ---
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    # If they submit the password form
     if request.method == 'POST':
-        password = request.form.get('password')
-        if password == "zeni123":  # CHANGE THIS PASSWORD
+        if request.form.get('password') == "zeni123":
             return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
         else:
-            return "WRONG PASSWORD! GO BACK."
-    
-    # If they just open the page, show the Login Screen
+            return "WRONG PASSWORD!"
     return render_template('admin_login.html')
 
 @app.route('/update_leaderboard', methods=['POST'])
@@ -67,19 +67,14 @@ def update_leaderboard():
         'kills': request.form.get('kills'),
         'prize': request.form.get('prize')
     })
-    # Use a trick to keep them logged in (render admin directly)
     return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
 
 @app.route('/approve/<uid>', methods=['POST'])
 def approve(uid):
-    room_id = request.form.get('room_id')
-    room_pass = request.form.get('room_pass')
-    approved_players[uid] = {'id': room_id, 'pass': room_pass}
-    
+    approved_players[uid] = {'id': request.form.get('room_id'), 'pass': request.form.get('room_pass')}
     for reg in registrations:
         if reg['p1_uid'] == uid:
             reg['status'] = 'APPROVED'
-            
     return render_template('admin.html', requests=registrations, solo_lb=leaderboards['SOLO'], duo_lb=leaderboards['DUO'])
 
 if __name__ == '__main__':
