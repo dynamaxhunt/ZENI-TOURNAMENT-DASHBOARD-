@@ -1,45 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hunter Profile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Status</title>
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .card { max-width: 400px; margin: auto; background: #0f0f13; padding: 20px; border: 1px solid #333; border-radius: 10px; }
-        .status-box { padding: 15px; margin-top: 20px; border-radius: 5px; background: #1a1a1a; border: 1px dashed #555; }
-        .verified { border-color: #00ff00; color: #00ff00; }
-        .pending { border-color: #ff9900; color: #ff9900; }
-        input { padding: 10px; width: 70%; background: black; border: 1px solid #555; color: white; }
-        button { padding: 10px; background: #9d00ff; color: white; border: none; cursor: pointer; }
+        body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
+        .box { border: 2px solid #00e5ff; padding: 30px; display: inline-block; border-radius: 15px; }
+        .approved { color: #00e676; font-size: 24px; font-weight: bold; }
+        .pending { color: orange; }
+        .room-box { background: #222; padding: 15px; margin-top: 20px; border: 1px dashed white; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 style="color: #9d00ff;">HUNTER STATUS</h2>
-    
-    {% if not player %}
-        <p>Enter your UID to see your Ticket</p>
-        <form action="/profile" method="GET">
-            <input type="number" name="uid" placeholder="Enter UID" required>
-            <button>SEARCH</button>
-        </form>
-    {% else %}
-        <h3>{{ player.nickname }}</h3>
-        <p style="color:#888;">UID: {{ player.uid }}</p>
-        <p>Match: <b>{{ player.match }}</b></p>
-
-        <div class="status-box {% if player.status == 'Verified' %}verified{% else %}pending{% endif %}">
-            STATUS: <b>{{ player.status }}</b>
-            <hr style="border-color: #333;">
-            <p style="color: white; font-size: 18px; font-weight: bold;">
-                {{ player.room_details }}
-            </p>
-        </div>
-        <br>
-        <a href="/profile" style="color: #555;">Check Another ID</a>
-    {% endif %}
-</div>
+    <div class="box">
+        <h2>PLAYER STATUS</h2>
+        <p>UID: {{ uid }}</p>
+        
+        {% if status == 'APPROVED' %}
+            <p class="approved">✅ APPROVED</p>
+            <div class="room-box">
+                <h3>ROOM DETAILS</h3>
+                <p>ROOM ID: <b style="color:#00e5ff">{{ room.id }}</b></p>
+                <p>PASSWORD: <b style="color:#00e5ff">{{ room.pass }}</b></p>
+            </div>
+        {% elif status == 'PENDING' %}
+            <p class="pending">⏳ REGISTRATION PENDING</p>
+            <p>Please wait for Admin verification.</p>
+        {% else %}
+            <p style="color:red">❌ NOT FOUND</p>
+            <a href="/">Go Register</a>
+        {% endif %}
+        
+        <br><br>
+        <a href="/" style="color:white">Back to Home</a>
+    </div>
 
 </body>
 </html>
