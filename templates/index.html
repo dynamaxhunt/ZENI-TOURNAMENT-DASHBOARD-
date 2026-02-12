@@ -7,285 +7,144 @@
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
     <style>
+        /* RESET & BASICS */
         body { background: #050505; color: white; font-family: 'Rajdhani', sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
-        h1, h2, h3 { font-family: 'Orbitron', sans-serif; }
-        .container { max-width: 600px; margin: 0 auto; padding: 10px; }
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; margin: 0; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+
+        /* HEADER */
+        .header { margin-top: 30px; margin-bottom: 20px; }
+        .glow-text { color: #00e5ff; text-shadow: 0 0 15px #9d00ff; font-size: 28px; }
 
         /* LEADERBOARDS */
-        .lb-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
-        .lb-box { background: #110d1f; border: 1px solid #333; padding: 10px; width: 45%; min-width: 250px; border-radius: 10px; }
-        .lb-title { border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
+        .lb-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+        .lb-box { background: #110d1f; border: 1px solid #333; padding: 15px; width: 45%; min-width: 280px; border-radius: 12px; }
+        .lb-title { border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 10px; font-size: 18px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th { text-align: left; color: #888; font-size: 12px; }
-        td { border-bottom: 1px solid #222; padding: 5px 0; }
+        th { text-align: left; color: #888; font-size: 11px; text-transform: uppercase; }
+        td { border-bottom: 1px solid #222; padding: 8px 0; }
 
-        /* FORMS */
-        .card { background: #1a1a24; border: 1px solid #333; padding: 20px; margin: 20px 0; border-radius: 15px; text-align: left; }
-        .card h2 { text-align: center; margin-top: 0; }
-        label { display: block; color: #aaa; font-size: 12px; margin-top: 10px; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; margin-top: 15px; font-family: 'Orbitron'; font-size: 16px; }
+        /* FORMS & CARDS */
+        .card { background: #1a1a24; border: 1px solid #333; padding: 25px; margin-bottom: 25px; border-radius: 16px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .card h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
         
-        .solo-theme { border-color: #9d00ff; }
-        .solo-btn { background: #9d00ff; color: white; }
-        .duo-theme { border-color: #ff0055; }
-        .duo-btn { background: #ff0055; color: white; }
+        label { display: block; color: #aaa; font-size: 12px; margin-top: 15px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        input { width: 100%; padding: 14px; background: #080808; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
+        input:focus { border-color: #00e5ff; outline: none; background: #111; }
+        
+        button { width: 100%; padding: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; margin-top: 25px; font-family: 'Orbitron'; font-size: 16px; transition: 0.3s; }
+        button:hover { transform: scale(1.02); }
+
+        /* THEMES */
+        .solo-theme { border: 1px solid #9d00ff; }
+        .solo-title { color: #9d00ff; }
+        .solo-btn { background: linear-gradient(90deg, #9d00ff, #7b00cc); color: white; box-shadow: 0 0 10px rgba(157, 0, 255, 0.4); }
+        
+        .duo-theme { border: 1px solid #ff0055; }
+        .duo-title { color: #ff0055; }
+        .duo-btn { background: linear-gradient(90deg, #ff0055, #cc0044); color: white; box-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
+
+        .status-box { border: 1px solid #00e5ff; background: rgba(0, 229, 255, 0.05); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1 style="color:#00e5ff; text-shadow: 0 0 15px #9d00ff; margin-top: 30px;">ZENI SHADOW SCRIMS</h1>
-        <p style="color:#888;">OFFICIAL TOURNAMENT HUB</p>
+        <div class="header">
+            <h1 class="glow-text">ZENI SHADOW SCRIMS</h1>
+            <p style="color:#888; font-size: 12px; letter-spacing: 2px;">OFFICIAL TOURNAMENT HUB</p>
+        </div>
 
         <div class="lb-container">
-            <div class="lb-box" style="border-top: 3px solid #9d00ff;">
-                <h3 class="lb-title" style="color:#9d00ff">SOLO KINGS 👑</h3>
+            <div class="lb-box" style="border-top: 4px solid #9d00ff;">
+                <h3 class="lb-title solo-title">SOLO KINGS 👑</h3>
                 <table>
                     <tr><th>PLAYER</th><th>KILLS</th><th>PRIZE</th></tr>
                     {% for p in solo_lb %}
-                    <tr><td style="color:#00e5ff; font-weight:bold;">{{ p.name }}</td><td>{{ p.kills }}</td><td style="color:#00e676">{{ p.prize }}</td></tr>
+                    <tr>
+                        <td style="color:#00e5ff; font-weight:bold;">{{ p.name }}</td>
+                        <td>{{ p.kills }}</td>
+                        <td style="color:#00e676">{{ p.prize }}</td>
+                    </tr>
                     {% else %}
-                    <tr><td colspan="3" style="text-align:center; padding:10px; color:#555;">No Matches Yet</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding:15px; color:#555;">No Matches Yet</td></tr>
                     {% endfor %}
                 </table>
             </div>
 
-            <div class="lb-box" style="border-top: 3px solid #ff0055;">
-                <h3 class="lb-title" style="color:#ff0055">DUO LEGENDS 💀</h3>
+            <div class="lb-box" style="border-top: 4px solid #ff0055;">
+                <h3 class="lb-title duo-title">DUO LEGENDS 💀</h3>
                 <table>
                     <tr><th>TEAM</th><th>KILLS</th><th>PRIZE</th></tr>
                     {% for p in duo_lb %}
-                    <tr><td style="color:#ff0055; font-weight:bold;">{{ p.name }}</td><td>{{ p.kills }}</td><td style="color:#00e676">{{ p.prize }}</td></tr>
+                    <tr>
+                        <td style="color:#ff0055; font-weight:bold;">{{ p.name }}</td>
+                        <td>{{ p.kills }}</td>
+                        <td style="color:#00e676">{{ p.prize }}</td>
+                    </tr>
                     {% else %}
-                    <tr><td colspan="3" style="text-align:center; padding:10px; color:#555;">No Matches Yet</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding:15px; color:#555;">No Matches Yet</td></tr>
                     {% endfor %}
                 </table>
             </div>
         </div>
 
-        <div class="card" style="border: 1px solid #00e5ff;">
-            <h3 style="text-align:center; color:#00e5ff;">🔍 CHECK MY STATUS</h3>
+        <div class="card status-box">
+            <h3 style="text-align:center; color:#00e5ff; margin-bottom: 10px;">🔍 CHECK MY STATUS</h3>
             <form action="/profile" method="get">
-                <input type="text" name="uid" placeholder="Enter Your UID" required>
-                <button type="submit" style="background: #00e5ff; color: #000;">SEARCH</button>
+                <input type="text" name="uid" placeholder="Enter UID to get Room ID/Pass" required>
+                <button type="submit" style="background: #00e5ff; color: #000; box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);">SEARCH</button>
             </form>
         </div>
 
         <div class="card solo-theme">
-            <h2 style="color:#9d00ff">SOLO REGISTRATION</h2>
+            <h2 class="solo-title">SOLO REGISTRATION</h2>
             <form action="/register" method="post">
                 <input type="hidden" name="mode" value="SOLO">
-                <label>IN-GAME NAME</label><input type="text" name="p1_name" placeholder="Ex: ZENI_01" required>
-                <label>YOUR UID</label><input type="number" name="p1_uid" placeholder="Ex: 12345678" required>
-                <label>PAYMENT DETAILS</label>
+                
+                <label>IN-GAME NAME</label>
+                <input type="text" name="p1_name" placeholder="Ex: ZENI_01" required>
+                
+                <label>YOUR UID</label>
+                <input type="number" name="p1_uid" placeholder="Ex: 12345678" required>
+                
+                <label style="color:#00e676;">PAYMENT DETAILS (Entry: ₹19)</label>
                 <input type="text" name="sender_name" placeholder="Sender Name (UPI)" required>
                 <input type="text" name="txn_id" placeholder="Transaction ID (UTR)" required>
+
                 <button type="submit" class="solo-btn">PAY ₹19 & JOIN</button>
             </form>
         </div>
 
         <div class="card duo-theme">
-            <h2 style="color:#ff0055">DUO REGISTRATION</h2>
+            <h2 class="duo-title">DUO REGISTRATION</h2>
             <form action="/register" method="post">
                 <input type="hidden" name="mode" value="DUO">
                 
-                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">PLAYER 1 DETAILS</label>
+                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">PLAYER 1 (LEADER)</label>
                 <input type="text" name="p1_name" placeholder="Name" required style="margin-bottom:5px;">
                 <input type="number" name="p1_uid" placeholder="UID" required>
 
-                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">PLAYER 2 DETAILS</label>
+                <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">PLAYER 2</label>
                 <input type="text" name="p2_name" placeholder="Name" required style="margin-bottom:5px;">
                 <input type="number" name="p2_uid" placeholder="UID" required>
 
-                <label style="color:#aaa; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">SUBSTITUTE (OPTIONAL)</label>
-                <input type="text" name="sub_name" placeholder="Sub Name" style="margin-bottom:5px;">
-                <input type="number" name="sub_uid" placeholder="Sub UID">
+                <label style="color:#aaa; border-bottom:1px solid #333; padding-bottom:5px; margin-top:20px;">SUBSTITUTE PLAYER (OPTIONAL)</label>
+                <input type="text" name="sub_name" placeholder="Substitute Name" style="margin-bottom:5px;">
+                <input type="number" name="sub_uid" placeholder="Substitute UID">
 
-                <label style="color:#00e676; margin-top:20px;">PAYMENT VERIFICATION</label>
+                <label style="color:#00e676; margin-top:20px;">PAYMENT DETAILS (Entry: ₹39)</label>
                 <input type="text" name="sender_name" placeholder="Sender Name (UPI App)" required style="margin-bottom:5px;">
                 <input type="text" name="txn_id" placeholder="Transaction ID / UTR" required>
 
                 <button type="submit" class="duo-btn">PAY ₹39 & JOIN</button>
             </form>
         </div>
-    </div>
-</body>
-</html>
-                <div class="input-group">
-                    <label>In-Game Name (IGN)</label>
-                    <input type="text" id="ign" required placeholder="Ex: ZENI_01">
-                </div>
-                <div class="input-group">
-                    <label>Free Fire UID</label>
-                    <input type="number" id="uid" required placeholder="Ex: 12345678">
-                </div>
-                <div class="input-group">
-                    <label>WhatsApp Number</label>
-                    <input type="tel" id="phone" required placeholder="For Room ID/Pass">
-                </div>
-                <button type="submit" class="confirm-btn">PAY & JOIN</button>
-                <span onclick="closeRegister()" class="close-btn">Cancel</span>
-            </form>
+
+        <div style="text-align:center; margin-top:30px;">
+            <a href="/admin" style="color:#333; text-decoration:none; font-size:12px;">Admin Panel Access</a>
         </div>
+
     </div>
-
-    <div class="admin-toggle" onclick="toggleAdmin()">Admin Panel Access</div>
-
-    <div id="adminPanel" class="admin-panel">
-        <h2 style="color:var(--accent);">👑 ADMIN CONTROL</h2>
-        
-        <br>
-        <h3 style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">📋 JOIN REQUESTS</h3>
-        <ul id="requestList" style="color:#aaa; font-size:12px; list-style:none; max-height:150px; overflow-y:scroll; margin:10px 0;"></ul>
-        <button onclick="clearRequestsSafe()" class="danger-btn">⚠️ CLEAR ALL REQUESTS (Password)</button>
-
-        <br><br>
-        <h3 style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">🏆 UPDATE LEADERBOARD</h3>
-        <p style="color:#666; font-size:11px;">Enter winner details below. This will show on the main site for 7 days.</p>
-        
-        <input type="text" id="lbName" class="admin-input" placeholder="Winner Name (e.g. DARK_KING)">
-        <input type="text" id="lbKills" class="admin-input" placeholder="Kills (e.g. 12)">
-        <input type="text" id="lbPrize" class="admin-input" placeholder="Prize Won (e.g. ₹500)">
-        <button onclick="addWinner()" class="success-btn">ADD TO LEADERBOARD</button>
-        <button onclick="resetLeaderboard()" style="background:#444; color:#fff; padding:5px; width:100%; border:none; margin-top:5px;">Reset Leaderboard</button>
-    </div>
-
-    <script>
-        // --- 1. REGISTRATION LOGIC ---
-        function openRegister(mode) {
-            document.getElementById('regModal').style.display = 'flex';
-            document.getElementById('matchType').value = mode;
-        }
-        function closeRegister() {
-            document.getElementById('regModal').style.display = 'none';
-        }
-
-        document.getElementById('joinForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get Data
-            const player = {
-                mode: document.getElementById('matchType').value,
-                ign: document.getElementById('ign').value,
-                uid: document.getElementById('uid').value,
-                phone: document.getElementById('phone').value,
-                time: new Date().toLocaleString()
-            };
-
-            // Save to LocalStorage (Simulating Database)
-            let requests = JSON.parse(localStorage.getItem('zeniRequests')) || [];
-            requests.push(player);
-            localStorage.setItem('zeniRequests', JSON.stringify(requests));
-
-            alert("Registration Pending! Pay ₹" + (player.mode === 'SOLO' ? '19' : '39') + " to verify.");
-            closeRegister();
-            loadRequests(); // Refresh Admin
-        });
-
-        // --- 2. ADMIN: REQUESTS ---
-        function toggleAdmin() {
-            const pass = prompt("Enter Admin Password:");
-            if(pass === "zeni123") { // CHANGE THIS PASSWORD
-                document.getElementById('adminPanel').style.display = 'block';
-                loadRequests();
-            } else {
-                alert("Wrong Password");
-            }
-        }
-
-        function loadRequests() {
-            const list = document.getElementById('requestList');
-            let requests = JSON.parse(localStorage.getItem('zeniRequests')) || [];
-            list.innerHTML = "";
-            if(requests.length === 0) list.innerHTML = "<li>No pending requests.</li>";
-            
-            requests.forEach(req => {
-                let li = document.createElement('li');
-                li.innerHTML = `<span style="color:var(--primary)">[${req.mode}]</span> <b>${req.ign}</b> (UID: ${req.uid}) - 📞 ${req.phone}`;
-                li.style.borderBottom = "1px solid #222";
-                li.style.padding = "5px 0";
-                list.appendChild(li);
-            });
-        }
-
-        function clearRequestsSafe() {
-            // SAFETY PASSWORD CHECK
-            const safetyPass = prompt("⚠️ DANGER ZONE ⚠️\nEnter Password to DELETE ALL requests:");
-            if(safetyPass === "delete999") { // CHANGE THIS DELETE PASSWORD
-                localStorage.removeItem('zeniRequests');
-                loadRequests();
-                alert("All requests cleared successfully.");
-            } else {
-                alert("Incorrect Password. Action Cancelled.");
-            }
-        }
-
-        // --- 3. LEADERBOARD SYSTEM ---
-        function loadLeaderboard() {
-            const lbData = JSON.parse(localStorage.getItem('zeniLeaderboard'));
-            const display = document.getElementById('leaderboardDisplay');
-            const tbody = document.getElementById('lbBody');
-            
-            // Check Expiry (7 Days = 604800000 ms)
-            if (lbData && (Date.now() - lbData.timestamp > 604800000)) {
-                localStorage.removeItem('zeniLeaderboard'); // Expired
-                display.style.display = 'none';
-                return;
-            }
-
-            if (lbData && lbData.winners.length > 0) {
-                display.style.display = 'block';
-                tbody.innerHTML = "";
-                lbData.winners.forEach((w, index) => {
-                    let rankClass = index === 0 ? 'rank-1' : '';
-                    let row = `<tr>
-                        <td class="${rankClass}">#${index + 1}</td>
-                        <td class="${rankClass}">${w.name}</td>
-                        <td>${w.kills} ⚔️</td>
-                        <td style="color:#00e676;">${w.prize}</td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            } else {
-                display.style.display = 'none';
-            }
-        }
-
-        function addWinner() {
-            let lbData = JSON.parse(localStorage.getItem('zeniLeaderboard')) || { timestamp: Date.now(), winners: [] };
-            
-            const newWinner = {
-                name: document.getElementById('lbName').value,
-                kills: document.getElementById('lbKills').value,
-                prize: document.getElementById('lbPrize').value
-            };
-
-            if(newWinner.name) {
-                lbData.winners.push(newWinner);
-                // Update Timestamp to reset the 7-day timer
-                lbData.timestamp = Date.now(); 
-                localStorage.setItem('zeniLeaderboard', JSON.stringify(lbData));
-                alert("Leaderboard Updated!");
-                loadLeaderboard();
-                
-                // Clear inputs
-                document.getElementById('lbName').value = "";
-                document.getElementById('lbKills').value = "";
-                document.getElementById('lbPrize').value = "";
-            }
-        }
-
-        function resetLeaderboard() {
-            if(confirm("Are you sure? This hides the leaderboard from the main site.")) {
-                localStorage.removeItem('zeniLeaderboard');
-                loadLeaderboard();
-            }
-        }
-
-        // Initialize on Load
-        window.onload = loadLeaderboard;
-
-    </script>
 </body>
 </html>
