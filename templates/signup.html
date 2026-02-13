@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Signup - ZENI SCRIMS</title>
+    <title>Signup</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
         .box { background: #1a1a24; border: 1px solid #00e5ff; padding: 30px; display: inline-block; border-radius: 15px; width: 300px; }
         input { width: 90%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 5px; }
         button { width: 100%; padding: 12px; background: #00e5ff; color: black; border: none; font-weight: bold; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; }
-        a { color: #9d00ff; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2 style="color:#00e5ff; font-family:'Orbitron'">CREATE ACCOUNT</h2>
+        <h2 style="color:#00e5ff; font-family:'Orbitron'">SIGN UP</h2>
         <form method="POST">
-            <input type="text" name="name" placeholder="In-Game Name (IGN)" required>
+            <input type="text" name="name" placeholder="IGN (Name)" required>
             <input type="tel" name="phone" placeholder="Phone Number" required>
             <input type="password" name="password" placeholder="Create Password" required>
-            <button type="submit">SIGN UP</button>
+            <button type="submit">REGISTER</button>
         </form>
-        <p>Already have an account? <a href="/login">Login</a></p>
+        <p><a href="/login" style="color:#9d00ff;">Login</a></p>
     </div>
 </body>
 </html>
