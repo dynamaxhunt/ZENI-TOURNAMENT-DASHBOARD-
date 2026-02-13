@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - ZENI SCRIMS</title>
+    <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
         .box { background: #1a1a24; border: 1px solid #9d00ff; padding: 30px; display: inline-block; border-radius: 15px; width: 300px; }
         input { width: 90%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 5px; }
         button { width: 100%; padding: 12px; background: #9d00ff; color: white; border: none; font-weight: bold; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; }
-        a { color: #00e5ff; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2 style="color:#9d00ff; font-family:'Orbitron'">PLAYER LOGIN</h2>
+        <h2 style="color:#9d00ff; font-family:'Orbitron'">LOGIN</h2>
         <form method="POST">
             <input type="tel" name="phone" placeholder="Phone Number" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">LOGIN</button>
+            <button type="submit">ENTER</button>
         </form>
-        <p>New here? <a href="/signup">Create Account</a></p>
-        <p><a href="/">Back to Home</a></p>
+        <p><a href="/signup" style="color:#00e5ff;">Create Account</a></p>
     </div>
 </body>
 </html>
