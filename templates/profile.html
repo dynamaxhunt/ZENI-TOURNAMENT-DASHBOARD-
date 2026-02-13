@@ -1,39 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Status</title>
+    <title>My Dashboard</title>
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     <style>
-        body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .box { border: 2px solid #00e5ff; padding: 30px; display: inline-block; border-radius: 15px; }
-        .approved { color: #00e676; font-size: 24px; font-weight: bold; }
-        .pending { color: orange; }
-        .room-box { background: #222; padding: 15px; margin-top: 20px; border: 1px dashed white; }
+        body { background: #050505; color: white; font-family: sans-serif; text-align: center; padding-top: 20px; }
+        .match-box { background: #1a1a24; border: 1px solid #444; margin: 10px auto; width: 90%; max-width: 400px; padding: 15px; border-radius: 10px; text-align: left; }
+        .approved { border-color: #00e676; }
+        .room-details { background: #000; padding: 10px; margin-top: 10px; border-radius: 5px; color: #00e5ff; font-weight: bold; }
     </style>
 </head>
 <body>
+    <h2 style="color:#00e5ff">MY MATCHES</h2>
+    <a href="/" style="color:#aaa;">&larr; Back to Home</a>
 
-    <div class="box">
-        <h2>PLAYER STATUS</h2>
-        <p>UID: {{ uid }}</p>
-        
-        {% if status == 'APPROVED' %}
-            <p class="approved">✅ APPROVED</p>
-            <div class="room-box">
-                <h3>ROOM DETAILS</h3>
-                <p>ROOM ID: <b style="color:#00e5ff">{{ room.id }}</b></p>
-                <p>PASSWORD: <b style="color:#00e5ff">{{ room.pass }}</b></p>
+    {% if regs %}
+        {% for reg in regs %}
+        <div class="match-box {{ 'approved' if reg.status == 'APPROVED' else '' }}">
+            <div style="display:flex; justify-content:space-between;">
+                <span style="color:gold; font-weight:bold;">{{ reg.mode }}</span>
+                <span style="color:#aaa;">{{ reg.slot }}</span>
             </div>
-        {% elif status == 'PENDING' %}
-            <p class="pending">⏳ REGISTRATION PENDING</p>
-            <p>Please wait for Admin verification.</p>
-        {% else %}
-            <p style="color:red">❌ NOT FOUND</p>
-            <a href="/">Go Register</a>
-        {% endif %}
-        
-        <br><br>
-        <a href="/" style="color:white">Back to Home</a>
-    </div>
+            <p>UID: {{ reg.p1_uid }}</p>
+            <p>Status: 
+                <span style="color:{{ 'green' if reg.status == 'APPROVED' else 'orange' }}">
+                    {{ reg.status }}
+                </span>
+            </p>
 
+            {% if reg.status == 'APPROVED' %}
+            <div class="room-details">
+                ROOM ID: {{ reg.room_id }}<br>
+                PASS: {{ reg.room_pass }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>You haven't joined any matches yet.</p>
+        <a href="/">Join a Tournament</a>
+    {% endif %}
 </body>
 </html>
