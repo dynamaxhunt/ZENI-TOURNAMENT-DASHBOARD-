@@ -4,16 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZENI SHADOW SCRIMS</title>
+    
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+    
     <style>
-        /* RESET & BASICS */
+        /* BASE STYLES */
         body { background: #050505; color: white; font-family: 'Rajdhani', sans-serif; text-align: center; margin: 0; padding-bottom: 50px; }
         h1, h2, h3 { font-family: 'Orbitron', sans-serif; margin: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 15px; }
 
+        /* TOP BAR (LOGIN/USER) */
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 10px; font-size: 14px; }
+        .auth-btn { text-decoration: none; font-weight: bold; padding: 5px 10px; border-radius: 5px; margin-left: 10px; font-size: 12px; }
+        .login-btn { border: 1px solid #00e5ff; color: #00e5ff; }
+        .signup-btn { border: 1px solid #9d00ff; color: #9d00ff; }
+        .user-info { color: #00e5ff; margin-right: 10px; }
+        .logout-btn { color: #ff4444; text-decoration: none; font-size: 12px; margin-left: 10px; }
+
         /* HEADER */
-        .header { margin-top: 30px; margin-bottom: 20px; }
+        .header { margin-top: 10px; margin-bottom: 20px; }
         .glow-text { color: #00e5ff; text-shadow: 0 0 15px #9d00ff; font-size: 28px; }
 
         /* LEADERBOARDS */
@@ -24,12 +35,12 @@
         th { text-align: left; color: #888; font-size: 11px; text-transform: uppercase; }
         td { border-bottom: 1px solid #222; padding: 8px 0; }
 
-        /* FORMS & CARDS */
+        /* CARDS & FORMS */
         .card { background: #1a1a24; border: 1px solid #333; padding: 25px; margin-bottom: 25px; border-radius: 16px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .card h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
         
         label { display: block; color: #aaa; font-size: 12px; margin-top: 15px; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
-        input { width: 100%; padding: 14px; background: #080808; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
+        input, select { width: 100%; padding: 14px; background: #080808; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
         input:focus { border-color: #00e5ff; outline: none; background: #111; }
         
         button { width: 100%; padding: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; margin-top: 25px; font-family: 'Orbitron'; font-size: 16px; transition: 0.3s; }
@@ -45,11 +56,74 @@
         .duo-btn { background: linear-gradient(90deg, #ff0055, #cc0044); color: white; box-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
 
         .status-box { border: 1px solid #00e5ff; background: rgba(0, 229, 255, 0.05); }
+
+        /* PAYMENT MODAL (POPUP) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; justify-content: center; align-items: center; }
+        .modal-content { background: #111; padding: 30px; border-radius: 15px; border: 2px solid #00e676; text-align: center; width: 85%; max-width: 350px; }
+        .qr-img { width: 200px; height: 200px; margin: 15px 0; border: 5px solid white; }
     </style>
+
+    <script>
+        // PAYMENT LOGIC
+        let currentMode = "";
+        
+        function openPayment(mode, amount) {
+            // 1. Check if user is logged in (optional check)
+            /* {% if not current_user.is_authenticated %}
+                alert("Please Login First!");
+                window.location.href = "/login";
+                return;
+            {% endif %}
+            */
+
+            // 2. Validate Form First
+            const form = document.getElementById(mode + '-form');
+            if(!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // 3. Set Data
+            currentMode = mode;
+            
+            // 4. Generate UPI QR Code (REPLACE WITH YOUR UPI ID BELOW)
+            const upiID = "yourupi@okaxis"; // <--- CHANGE THIS
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${upiID}%26pn=ZENI%26am=${amount}%26tn=TournamentFee`;
+            
+            document.getElementById('qrImage').src = qrUrl;
+            document.getElementById('payAmount').innerText = "₹" + amount;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closePayment() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function confirmPayment() {
+            const txnId = document.getElementById('finalTxnId').value;
+            if(!txnId) { alert("Please enter Transaction ID!"); return; }
+            
+            // Fill the hidden Txn ID in the real form and submit
+            document.getElementById(currentMode + '-txn').value = txnId;
+            document.getElementById(currentMode + '-form').submit();
+        }
+    </script>
 </head>
 <body>
 
     <div class="container">
+        
+        <div class="top-bar">
+            {% if current_user.is_authenticated %}
+                <span class="user-info">Welcome, {{ current_user.name }}</span>
+                <a href="/profile" style="color:white; text-decoration:underline;">My Dashboard</a>
+                <a href="/logout" class="logout-btn">Logout</a>
+            {% else %}
+                <a href="/login" class="auth-btn login-btn">LOGIN</a>
+                <a href="/signup" class="auth-btn signup-btn">SIGN UP</a>
+            {% endif %}
+        </div>
+
         <div class="header">
             <h1 class="glow-text">ZENI SHADOW SCRIMS</h1>
             <p style="color:#888; font-size: 12px; letter-spacing: 2px;">OFFICIAL TOURNAMENT HUB</p>
@@ -99,8 +173,16 @@
 
         <div class="card solo-theme">
             <h2 class="solo-title">SOLO REGISTRATION</h2>
-            <form action="/register" method="post">
+            <form id="SOLO-form" action="/register" method="post">
                 <input type="hidden" name="mode" value="SOLO">
+                <input type="hidden" name="txn_id" id="SOLO-txn">
+
+                <label>SELECT SLOT</label>
+                <select name="slot" required>
+                    <option value="SOLO-A">Slot A (6:00 PM)</option>
+                    <option value="SOLO-B">Slot B (7:00 PM)</option>
+                    <option value="SOLO-C">Slot C (8:00 PM)</option>
+                </select>
                 
                 <label>IN-GAME NAME</label>
                 <input type="text" name="p1_name" placeholder="Ex: ZENI_01" required>
@@ -108,18 +190,25 @@
                 <label>YOUR UID</label>
                 <input type="number" name="p1_uid" placeholder="Ex: 12345678" required>
                 
-                <label style="color:#00e676;">PAYMENT DETAILS (Entry: ₹19)</label>
+                <label style="color:#00e676;">PAYMENT: ₹19</label>
                 <input type="text" name="sender_name" placeholder="Sender Name (UPI)" required>
-                <input type="text" name="txn_id" placeholder="Transaction ID (UTR)" required>
-
-                <button type="submit" class="solo-btn">PAY ₹19 & JOIN</button>
+                
+                <button type="button" class="solo-btn" onclick="openPayment('SOLO', 19)">PAY ₹19 & JOIN</button>
             </form>
         </div>
 
         <div class="card duo-theme">
             <h2 class="duo-title">DUO REGISTRATION</h2>
-            <form action="/register" method="post">
+            <form id="DUO-form" action="/register" method="post">
                 <input type="hidden" name="mode" value="DUO">
+                <input type="hidden" name="txn_id" id="DUO-txn">
+
+                <label>SELECT SLOT</label>
+                <select name="slot" required>
+                    <option value="DUO-A">Slot A (9:00 PM)</option>
+                    <option value="DUO-B">Slot B (10:00 PM)</option>
+                    <option value="DUO-C">Slot C (11:00 PM)</option>
+                </select>
                 
                 <label style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">PLAYER 1 (LEADER)</label>
                 <input type="text" name="p1_name" placeholder="Name" required style="margin-bottom:5px;">
@@ -133,11 +222,10 @@
                 <input type="text" name="sub_name" placeholder="Substitute Name" style="margin-bottom:5px;">
                 <input type="number" name="sub_uid" placeholder="Substitute UID">
 
-                <label style="color:#00e676; margin-top:20px;">PAYMENT DETAILS (Entry: ₹39)</label>
-                <input type="text" name="sender_name" placeholder="Sender Name (UPI App)" required style="margin-bottom:5px;">
-                <input type="text" name="txn_id" placeholder="Transaction ID / UTR" required>
+                <label style="color:#00e676; margin-top:20px;">PAYMENT: ₹39</label>
+                <input type="text" name="sender_name" placeholder="Sender Name (UPI App)" required>
 
-                <button type="submit" class="duo-btn">PAY ₹39 & JOIN</button>
+                <button type="button" class="duo-btn" onclick="openPayment('DUO', 39)">PAY ₹39 & JOIN</button>
             </form>
         </div>
 
@@ -146,5 +234,22 @@
         </div>
 
     </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color:#00e676; margin:0;">SCAN TO PAY</h2>
+            <h1 id="payAmount" style="color:white; font-size:40px; margin:10px 0;">₹0</h1>
+            <p style="color:#aaa; font-size:12px;">Scan using Paytm / GPay / PhonePe</p>
+            
+            <img id="qrImage" src="" class="qr-img">
+            
+            <label style="text-align:left; color:#fff;">ENTER TRANSACTION ID</label>
+            <input type="text" id="finalTxnId" placeholder="Ex: 583920..." style="border-color:#00e676;">
+            
+            <button onclick="confirmPayment()" style="background:#00e676; color:black; margin-top:10px;">VERIFY & SUBMIT</button>
+            <button onclick="closePayment()" style="background:#333; margin-top:10px;">CANCEL</button>
+        </div>
+    </div>
+
 </body>
 </html>
