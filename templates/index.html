@@ -87,7 +87,7 @@
             currentMode = mode;
             
             // 4. Generate UPI QR Code (REPLACE WITH YOUR UPI ID BELOW)
-            const upiID = "yourupi@okaxis"; // <--- CHANGE THIS
+            const upiID = "dynamaxdb@okaxis"; // <--- CHANGE THIS
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${upiID}%26pn=ZENI%26am=${amount}%26tn=TournamentFee`;
             
             document.getElementById('qrImage').src = qrUrl;
