@@ -1,71 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
     <style>
-        body { 
-            background: #050505; 
-            color: white; 
-            font-family: sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .login-box { 
-            background: #110d1f; 
-            padding: 40px; 
-            border: 2px solid #9d00ff; 
-            border-radius: 15px; 
-            text-align: center; 
-            box-shadow: 0 0 20px rgba(157, 0, 255, 0.3);
-        }
-        h2 { 
-            font-family: 'Orbitron', sans-serif; 
-            color: #00e5ff; 
-            margin-bottom: 20px; 
-        }
-        input { 
-            padding: 12px; 
-            width: 80%; 
-            background: #000; 
-            border: 1px solid #444; 
-            color: white; 
-            text-align: center; 
-            font-size: 16px; 
-            border-radius: 5px;
-            outline: none;
-        }
-        input:focus { border-color: #00e5ff; }
-        button { 
-            display: block; 
-            width: 90%; 
-            margin: 20px auto 0; 
-            padding: 12px; 
-            background: #9d00ff; 
-            color: white; 
-            border: none; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-radius: 5px; 
-            font-family: 'Orbitron', sans-serif;
-        }
-        button:hover { background: #b62eff; }
+        body { background: #050505; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        form { background: #111; padding: 40px; border: 2px solid #9d00ff; border-radius: 10px; text-align: center; }
+        input { padding: 10px; background: #000; color: white; border: 1px solid #444; display: block; margin-bottom: 15px; width: 200px; }
+        button { background: #9d00ff; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-
-    <div class="login-box">
-        <h2>ZENI ADMIN</h2>
-        <form method="POST">
-            <input type="password" name="password" placeholder="Enter Access Code" required autofocus>
-            <button type="submit">UNLOCK SYSTEM</button>
-        </form>
-    </div>
-
+    <form method="POST">
+        <h2 style="color:#00e5ff; margin-top:0;">ADMIN ACCESS</h2>
+        <input type="password" name="password" placeholder="Passcode" required>
+        <button type="submit">UNLOCK</button>
+    </form>
 </body>
 </html>
