@@ -2,64 +2,88 @@
 <html>
 <head>
     <title>Admin Panel</title>
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='favicon.jpg') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
-        .section { background: #222; padding: 15px; margin-bottom: 20px; border: 1px solid #444; }
-        input, select { background: #000; color: white; border: 1px solid #555; padding: 5px; }
-        button { background: #00e676; border: none; cursor: pointer; padding: 5px 10px; font-weight: bold; }
+        h1, h3 { font-family: 'Orbitron', sans-serif; }
+        .section { background: #222; padding: 15px; margin-bottom: 20px; border: 1px solid #444; border-radius: 8px; }
+        input, select { background: #000; color: white; border: 1px solid #555; padding: 8px; margin: 5px 0; border-radius: 4px; }
+        button { background: #00e676; border: none; cursor: pointer; padding: 8px 12px; font-weight: bold; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #444; padding: 8px; text-align: left; }
+        th, td { border: 1px solid #444; padding: 10px; text-align: left; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .clear-btn { background: #ff0044; color: white; width: 100%; padding: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <h1>👑 ZENI ADMIN DASHBOARD</h1>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>👑 ZENI ADMIN</h1>
+        <a href="/" style="color:#aaa;">Go to Website ↗</a>
+    </div>
+
+    <form action="/clear_requests" method="post" onsubmit="return confirm('⚠️ DELETE ALL REQUESTS?');">
+        <button type="submit" class="clear-btn">🗑️ CLEAR ALL PLAYER REQUESTS</button>
+    </form>
 
     <div class="section">
-        <h3>🏆 UPDATE LEADERBOARD</h3>
+        <h3>🏆 ADD LEADERBOARD WINNER</h3>
         <form action="/update_leaderboard" method="post">
             <select name="lb_type">
-                <option value="SOLO">SOLO Leaderboard</option>
-                <option value="DUO">DUO Leaderboard</option>
+                <option value="SOLO">SOLO</option>
+                <option value="DUO">DUO</option>
             </select>
-            <input type="text" name="name" placeholder="Winner Name / Team" required>
+            <input type="text" name="name" placeholder="Name/Team" required>
             <input type="text" name="kills" placeholder="Kills" required>
-            <input type="text" name="prize" placeholder="Prize (e.g. ₹200)" required>
-            <button type="submit">ADD WINNER</button>
+            <input type="text" name="prize" placeholder="Prize" required>
+            <button type="submit">ADD</button>
+        </form>
+    </div>
+
+    <div class="section" style="border-color: #ffaa00;">
+        <h3 style="color:#ffaa00;">⏰ CHANGE SLOT TIMINGS</h3>
+        <form action="/update_slots" method="post">
+            <div class="grid">
+                {% for key, val in slots.items() %}
+                <div><label>{{ key }}</label><input type="text" name="{{ key }}" value="{{ val }}"></div>
+                {% endfor %}
+            </div>
+            <button type="submit" style="margin-top:10px; width:100%;">UPDATE TIMES</button>
+        </form>
+    </div>
+
+    <div class="section" style="border-color: #00e5ff;">
+        <h3 style="color:#00e5ff;">📡 BROADCAST (SEND ID/PASS)</h3>
+        <form action="/broadcast" method="post">
+            <select name="target_slot">
+                {% for key, val in slots.items() %}
+                <option value="{{ key.replace('_', '-') }}">{{ key.replace('_', '-') }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="room_id" placeholder="Room ID" required>
+            <input type="text" name="room_pass" placeholder="Password" required>
+            <button type="submit">🚀 SEND TO ALL</button>
         </form>
     </div>
 
     <div class="section">
         <h3>📋 PLAYER REQUESTS</h3>
         <table>
-            <tr>
-                <th>Mode</th>
-                <th>Team Details</th>
-                <th>Payment Info</th>
-                <th>Action</th>
-            </tr>
+            <tr><th>Slot</th><th>Mode</th><th>Players</th><th>Txn ID</th><th>Status</th><th>Action</th></tr>
             {% for reg in requests %}
             <tr>
+                <td><b style="color:#00e5ff">{{ reg.slot }}</b></td>
                 <td>{{ reg.mode }}</td>
-                <td>
-                    <b>P1:</b> {{ reg.p1_name }} ({{ reg.p1_uid }})<br>
-                    {% if reg.mode == 'DUO' %}
-                        <b>P2:</b> {{ reg.p2_name }} ({{ reg.p2_uid }})<br>
-                        <small style="color:#aaa;">Sub: {{ reg.sub_name }} ({{ reg.sub_uid }})</small>
-                    {% endif %}
-                </td>
-                <td>
-                    Txn: {{ reg.txn_id }}<br>
-                    Sender: {{ reg.sender }}
-                </td>
+                <td>{{ reg.p1_name }} ({{ reg.p1_uid }})</td>
+                <td>{{ reg.txn_id }}</td>
+                <td style="color: {{ 'green' if reg.status == 'APPROVED' else 'orange' }}">{{ reg.status }}</td>
                 <td>
                     {% if reg.status == 'PENDING' %}
-                    <form action="/approve/{{ reg.p1_uid }}" method="post">
-                        <input type="text" name="room_id" placeholder="Room ID" size="8">
-                        <input type="text" name="room_pass" placeholder="Pass" size="8">
-                        <button type="submit">✅ Approve</button>
+                    <form action="/approve/{{ reg.id }}" method="post">
+                        <input type="text" name="room_id" placeholder="ID" size="5">
+                        <input type="text" name="room_pass" placeholder="Pass" size="5">
+                        <button type="submit">✅</button>
                     </form>
-                    {% else %}
-                    <span style="color:green; font-weight:bold;">Sent ✅</span>
                     {% endif %}
                 </td>
             </tr>
